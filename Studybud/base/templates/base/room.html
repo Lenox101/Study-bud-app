@@ -1,0 +1,210 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+    /* Container for the room details and participants */
+    .room-container {
+        width: 80%; /* Increase width for better layout */
+        margin: 0 auto; /* Center the container */
+        display: grid;
+        grid-template-columns: 3fr 1fr; /* Split into 3:1 for messages and participants */
+        gap: 20px; /* Add space between columns */
+        padding: 20px;
+    }
+
+    /* Room name and description */
+    .room-container h1 {
+        font-size: 2rem;
+        color: #333; 
+        margin-bottom: 10px;
+    }
+
+    .room-container p {
+        font-size: 1.1rem;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    /* Comment section */
+    .comment-wrapper {
+        margin-top: 30px;
+    }
+
+    .comment-wrapper h3 {
+        font-size: 1.5rem;
+        color: #007bff;
+        margin-bottom: 15px;
+    }
+
+    /* Form for sending messages */
+    .comment-form {
+        margin-bottom: 20px;
+    }
+
+    .comment-form input {
+        width: 80%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .comment-form button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .comment-form button:hover {
+        background-color: #0056b3;
+    }
+
+    /* Messages section */
+    .message {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    position: relative; /* Allows for better control of the delete button */
+    display: flex; 
+    align-items: center;
+    
+}
+
+.message small {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.message p {
+    font-size: 1rem;
+    color: #333;
+    margin-top: 5px;
+}
+
+.message a {
+    font-size: 0.9rem;
+    color: #ff4c4c;
+    text-decoration: none;
+    position: absolute;
+    right: 15px;
+    top: 10px; /* Slightly above for alignment */
+    margin-top: 0; /* Remove extra margin to bring it close to the top */
+    padding: 5px;
+    transition: color 0.3s ease;
+}
+
+.message a:hover {
+    color: #d63d3d; /* Darker red on hover */
+}
+
+    /* Participants section */
+    .room-container h3 {
+        font-size: 1.5rem;
+        color: #333;
+    }
+
+    .participant {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f1f1f1;
+        border-radius: 5px;
+        text-align: left;
+    }
+    
+    .participant small {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .room-container {
+            grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        }
+
+        .comment-form input {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
+    .delete-logo{
+        width: 25px; /* Set the width of the logo */
+        height: auto;
+    }
+    .avatar {
+        width: 40px; /* Adjust avatar size */
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="room-container">
+    <!-- Room Details and Messages -->
+    <div>
+        <div style="display: flex; border-radius: 5px; justify-content: space-between; align-items: center; background-color: rgb(162, 238, 238); padding: 10px;">
+            <h1 style="margin: 0;">{{ room.name }}</h1>
+            {% if room.host == request.user %}
+                <div style="display: flex; gap: 10px;">
+                    <a href="{% url 'update-room' room.id %}"><img class="delete-logo" src="{% static 'img/edit.svg' %}" alt="" style="margin: 0;"></a>
+                    <a href="{% url 'delete-room' room.id %}"><img class="delete-logo" src="{% static 'img/delete.svg' %}" alt="" style="margin: 0;"></a>
+                </div>
+            {% endif %}
+        </div> 
+        <div style="justify-content: space-between; display: flex; font-size: 10px;">
+            <p style="font-size: 14px;"><i>Hosted by: {{ room.host.username }}</i></p>
+            <p style="font-size: 14px;"><i>This room was created {{ room.created|timesince }} ago</i></p>
+        </div>       
+        
+        <p>{{ room.description }}</p>
+
+        <div class="comment-wrapper">
+            <h3>Conversation</h3>
+            <!-- Check if user is authenticated for message input -->
+            {% if request.user.is_authenticated %}
+            <div class="comment-form">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <input type="text" name="body" placeholder="Type a message...">
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+            {% endif %}
+            <hr>
+            <!-- Display each message -->
+            {% for message in room_messages %}
+            <div class="message">
+                <img src="{{message.user.avatar.url}}" alt="" class="avatar" style="margin-right: 10px;">
+                <div>
+                    <small style="vertical-align: middle;">@{{ message.user.username }}: {{ message.created|timesince }} ago</small>
+                    <p>{{ message.body }}</p>
+                    
+                    <!-- Allow user to delete their own messages -->
+                    {% if request.user == message.user %}
+                        <a class="delete-btn" href="{% url 'delete-message' message.id %}">Delete</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Participants List -->
+    <div>
+        <h3>Participants</h3>
+        <hr>
+        {% for participant in participants %}
+        <div class="participant">
+            <small>@{{ participant.username }}</small>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    /* Styling for the home page components */
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+    }
+
+    .create-room-btn {
+        padding: 10px 20px;
+        background-color: #337ab7; /* blue color for button */
+        color: white;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+
+    .create-room-btn:hover {
+        background-color: #23527c; /* darker blue on hover */
+    }
+
+    .home-container {
+        display: grid;
+        grid-template-columns: 0.6fr 3fr 1fr;
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .topics-container {
+        padding-right: 20px;
+    }
+
+    .activity-container {
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+    }
+
+    /* Mobile responsive styling */
+    @media screen and (max-width: 768px) {
+        .home-container {
+            grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        }
+
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .header h1 {
+            padding-right: 0;
+            margin-bottom: 10px;
+        }
+
+        .create-room-btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        .topics-container, .room-list, .activity-container {
+            padding: 0;
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .create-room-btn {
+            padding: 10px 15px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        h4 {
+            font-size: 18px;
+        }
+
+        h5 {
+            font-size: 16px;
+        }
+    }
+</style>
+
+<div class="header">
+    <h1>Home Page</h1>
+    <a class="create-room-btn" href="{% url 'create-room' %}">Create Room</a>
+</div>
+
+<div style="padding-left: 240px;">
+    <h4>Study Room</h4>
+    <h5>There are {{ room_count }} rooms available</h5>
+</div>
+
+<div class="home-container">
+    <div class="topics-container">
+        {% include 'base/topics_component.html' %}
+    </div>
+
+    <div class="room-list">
+        {% include 'base/feed_component.html' %}
+    </div>
+
+    <div class="activity-container">
+       {% include 'base/activity_component.html' %}
+    </div>
+</div>
+{% endblock content %}

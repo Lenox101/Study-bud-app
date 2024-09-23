@@ -1,0 +1,107 @@
+<style>
+/* Room card styling */
+.room-card {
+    flex: 1 1 22%; /* Flexible width */
+    margin: 10px;
+    padding: 10px 15px; /* Reduce padding to decrease height */
+    background-color: #ffffff; /* White background */
+    border: 1px solid #ddd; /* Light border */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s, box-shadow 0.3s; /* Smooth hover effect */
+}
+.room-card p{
+    font-style: italic;
+    font-size: smaller;
+}
+
+.room-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Deeper shadow on hover */
+}
+
+/* Room topic styling */
+.room-topic {
+    font-size: 13px; /* Slightly smaller font */
+    color: #666; /* Dark gray text for the topic */
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Update room link styling */
+.room-update-link {
+    font-size: 13px; /* Smaller font size to reduce height */
+    color: #007bff; /* Primary blue color */
+    text-decoration: none;
+}
+
+.room-update-link:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* Room title styling */
+.room-title {
+    font-size: 16px; /* Reduce font size for the title */
+    font-weight: bold;
+    margin: 8px 0 5px 0; /* Reduce vertical spacing */
+}
+
+.room-name-link {
+    color: #333; /* Darker text for room name */
+    text-decoration: none;
+}
+
+.room-name-link:hover {
+    color: #007bff; /* Primary blue on hover */
+    text-decoration: underline;
+}
+
+/* Host link styling */
+.room-host-link {
+    font-size: 13px; /* Reduce font size to save space */
+    color: #555; /* Gray for host text */
+    text-decoration: none;
+}
+
+.room-host-link:hover {
+    color: #007bff; /* Blue on hover */
+    text-decoration: underline;
+}
+
+/* HR styling */
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 8px 0; /* Reduce vertical space around hr */
+}
+
+/* Adjusting the logo styling for rounded corners */
+.logo {
+    width: 30px; /* Set the width of the logo */
+    height: 30px; /* Maintain aspect ratio */
+    border-radius: 50%; /* Make the logo circular */
+}
+
+</style>
+{% load static %}
+{% for room in rooms %}
+    <div class="room-card">
+        <small class="room-topic">Topic: {{ room.topic.top_name }}</small><br>
+        
+        {% if request.user == room.host %}
+            <a class="room-update-link" href="{% url 'update-room' room.id %}">Update Room</a><br>
+        {% endif %}
+        
+        <h5 class="room-title">{{ room.id }}. <a class="room-name-link" href="{% url 'room' room.id %}">{{ room.name }}</a></h5>
+        
+        <a class="room-host-link" href="{% url 'user-profile' room.host.id %}">
+            This was posted by @{{ room.host.username }}
+        </a>
+        <p style="display: flex; align-items: center;">
+            <img src="{{room.host.avatar.url}}" class="logo" alt="Study Bud Logo" style="margin-right: 10px;">
+            <span>{{ room.participants.all.count }} Joined</span>
+        </p>        
+        <hr>
+    </div>
+{% endfor %}

@@ -1,0 +1,54 @@
+<style>
+    /* Styling for the Browse Topics section */
+h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Darker color for the header */
+    margin-bottom: 20px;
+}
+
+.topic-list {
+    margin-top: 10px;
+}
+
+.topic-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f9f9f9; /* Light background for each topic */
+    border-radius: 5px; /* Rounded corners */
+    border: 1px solid #e0e0e0; /* Light border around topics */
+    transition: background-color 0.3s ease;
+}
+
+.topic-item:hover {
+    background-color: #f0f0f0; /* Slight background change on hover */
+}
+
+.topic-link {
+    text-decoration: none; /* Remove underline */
+    font-size: 14px; /* Larger font size for topics */
+    color: #337ab7; /* Blue text color for links */
+    font-weight: bold;
+}
+
+.topic-link:hover {
+    color: #23527c; /* Darker blue on hover */
+}
+span{
+    background-color:bisque;
+}
+
+</style>
+<h3>Browse&nbsp;Topics</h3>
+<div class="topic-list">
+    <div class="topic-item">
+        <a href="{% url 'home' %}" class="topic-link">All Topics &nbsp; <span>{{topics.count}}</span> </a>
+    </div>
+    <br>
+    {% for topic in topics %}
+        <div class="topic-item">
+            <a href="{% url 'home' %}?q={{topic.top_name}}" class="topic-link">{{ topic.top_name }} &nbsp; <span>{{ topic.room_set.all.count}}</span> </a>
+        </div>
+        <br>
+    {% endfor %}
+</div>

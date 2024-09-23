@@ -1,0 +1,147 @@
+{% load static %}
+<style>
+    input[name='q']{
+        padding: 8px; 
+        width: 300px; 
+        border: 2px solid #ccc;
+        border-radius: 8px; 
+        font-size: 16px; 
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); 
+        transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    a{
+        text-decoration: none;
+    }
+
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropbtn {
+        background-color: #337ab7;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+    }
+
+    .dropbtn:hover {
+        background-color: #23527c;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #ffffff;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 5px;
+    }
+
+    .dropdown-content a {
+        color: #333;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-size: 14px;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+        background-color: #23527c;
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center; /* Align items vertically */
+        width: 100%;
+        padding-right: 30px; /* Add padding to the right */
+    }
+
+    .auth-container p {
+        margin: 0;
+        padding-right: 20px;
+        font-size: 16px;
+        color: #555;
+    }
+
+    .logo-container {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .logo {
+        width: 30px;
+        height: auto;
+        margin-right: 10px;
+    }
+
+    .site-title {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .avatar {
+        width: 40px; /* Adjust avatar size */
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .search-container {
+        margin: 0 auto; /* Center the search form */
+        padding-left: 5%;
+    }
+    #container_1{
+        padding-left: 5%; 
+        display: flex; 
+        padding-top: 23px;
+        align-items: center;
+        text-align: center;
+    }
+
+</style>
+<div style="display: flex;">
+    <a href="/" class="logo-container">
+        <img src="{% static 'img/logo.svg' %}" class="logo" alt="Study Bud Logo">
+        <h1 class="site-title">Study&nbsp;Bud</h1>
+    </a>
+    <div id="container_1">
+        <img src="{{request.user.avatar.url}}" class="avatar">
+        <p style="padding-right: 50px;">Hello {{request.user.username}}</p>
+        <form method="GET" action="{% url 'home' %}">
+            <input type="text" name="q" placeholder="Search by description, room, topic name...">
+        </form>
+    </div>
+    <div class="auth-container">
+        {% if request.user.is_authenticated %}
+        <div class="dropdown">
+            <button class="dropbtn">&#9662;</button> <!-- Unicode character for downwards arrow -->
+            <div class="dropdown-content">
+                <a href="{% url 'update-user' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            </div>
+        </div>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+    <hr>      
+</div> 
+<hr>

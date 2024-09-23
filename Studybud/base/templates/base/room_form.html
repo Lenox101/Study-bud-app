@@ -1,0 +1,109 @@
+{% extends 'main.html' %}
+{% block content %}
+<style>
+    .form-group {
+        margin-bottom: 15px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #80bdff;
+        outline: none;
+    }
+    .room-edit{
+        max-width: 400px; 
+        margin: 0 auto; 
+        padding: 20px; 
+        border: 1px solid #ccc; 
+        border-radius: 10px; 
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); 
+        background-color: #f9f9f9;
+    }
+    /* General button styles */
+.btn {
+    width: 30%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    margin-bottom: 10px;
+}
+
+/* Submit button styles */
+.btn-submit {
+    background-color: #4CAF50; /* Green */
+}
+
+/* Delete button styles */
+.btn-delete {
+    background-color: red; /* Red */
+    font-size: 14px; /* Slightly smaller font size for delete button */
+}
+
+</style>
+
+<div class="room-edit">
+    <h2 style="text-align: center; color: #333;">{{type}} Room {{ room.name }}</h2>
+    
+    <form method="POST" action="" style="text-align: center;">
+        {% csrf_token %}
+        <div class="form-group">
+            <div>
+                <label for="room_topic">Room Topic:</label>
+                <input type="text" value="{{ room.topic }}" name="topic" id="room_topic" list="topic-list" required>
+                <datalist id="topic-list">
+                    {% for topic in form.topic.field.queryset %}
+                        <option value="{{ topic }}">{{ topic }}</option> <!--Assuming form.topic is a Django form field that provides a queryset, this loop generates options dynamically -->
+                    {% endfor %}
+                </datalist>
+            </div>
+            
+            <br>
+            <div>
+                <label for="room_name">Room Name:</label>
+                {{form.name}}<br>
+            </div>
+            <br>
+            <div>
+                <label for="room_description">Room Description:</label>
+                {{form.description}}
+            </div>
+        </div>        
+        <!-- Submit button -->
+        <input type="submit" name="submit" value="Submit" class="btn btn-submit">
+
+        <!-- Delete button for deleting the room -->
+        {% if room.id %}
+            <a href="{% url 'delete-room' room.id %}" class="btn btn-delete">Delete</a>
+        {% endif %}
+
+    </form>
+</div>
+
+{% endblock %}

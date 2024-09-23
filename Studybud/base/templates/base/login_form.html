@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 150vh;  /* Full screen height */
+            margin: 0;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        a{
+            text-decoration: none;
+            color: #0056b3;
+            transition: 0.3s ease-in-out;
+        }
+        a:hover {
+            color: #0056b3;  /* Darker blue on hover */
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  /* Subtle shadow */
+            width: 350px;  /* Set a fixed width */
+            text-align: center;
+            font-size: smaller;
+        }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .login-container input[type="text"], 
+        .login-container input[type="password"],
+        .login-container input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease-in-out;
+        }
+
+        .login-container input[type="text"]:focus, 
+        .login-container input[type="password"]:focus {
+            border-color: #007bff;  /* Blue border on focus */
+            outline: none;
+        }
+
+        .login-container input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        .login-container input[type="submit"]:hover {
+            background-color: #0056b3;  /* Darker blue on hover */
+        }
+
+        /* For mobile responsiveness */
+        @media (max-width: 500px) {
+            .login-container {
+                width: 90%;  /* Make form take up most of the screen on smaller devices */
+            }
+        }
+    </style>
+</head>
+<body>
+    {% if page == 'login' %}
+    <div class="login-container">
+        <h2>Login</h2>
+        <form method="post" action="">
+            {% csrf_token %}
+            <input type="text" name="email" id="username" placeholder="Enter email">
+            <input type="password" name="password" id="password" placeholder="Enter Password">
+            <input type="submit" value="Login">
+        </form>
+        
+        <!-- Display messages -->
+        {% if messages %}
+            <div style="color: red;">
+                {% for message in messages %}
+                <p {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <p>Havent signed up yet?</p>
+        <a href="{% url 'register' %}">Sign up</a>
+    </div>
+
+    {% else %}
+
+    <div class="login-container">
+        <h2>Register</h2>
+        <form method="POST" action="">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Register">
+            <p>Already signed up?</p>
+            <a href="{% url 'login' %}">Login</a>
+        </form>
+    </div>
+    {% endif %}
+</body>
+</html>

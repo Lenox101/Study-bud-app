@@ -1,0 +1,19 @@
+{% extends 'main.html' %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; text-align: center;">
+    <h2>Are you sure you want to delete 
+        {% if obj.body is not None %}
+            "{{ obj.body }}"
+        {% else %}
+            "{{ obj.name }}"
+        {% endif %}
+    </h2>
+    
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" value="Yes, Delete" style="background-color: red; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+        <a href="{% url 'home' %}" style="background-color: grey; color: white; padding: 10px 20px; text-decoration: none; cursor: pointer;">Cancel</a>
+    </form>
+</div>
+{% endblock content %}

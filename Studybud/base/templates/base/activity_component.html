@@ -1,0 +1,122 @@
+<style>
+    /* Section title and divider styling */
+h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333; /* Dark color for section title */
+    margin-bottom: 20px;
+}
+
+.section-divider {
+    border: 0;
+    border-top: 2px solid #e0e0e0; /* Slightly thicker section divider */
+    margin-bottom: 20px;
+}
+
+/* Activity message container */
+.activity-message {
+    padding: 15px;
+    background-color: #f9f9f9; /* Light background */
+    border-radius: 8px; /* Rounded corners */
+    border: 1px solid #ddd; /* Light border */
+    margin-bottom: 15px; /* Space between messages */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+}
+
+.activity-message:hover {
+    transform: translateY(-3px); /* Slight lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Deeper shadow on hover */
+}
+
+/* User information styling */
+.activity-user {
+    font-size: 14px;
+    color: #666; /* Gray text for user info */
+}
+
+.user-link {
+    text-decoration: none;
+    color: #007bff; /* Blue for user profile links */
+    font-weight: bold; /* Bold username */
+}
+
+.user-link:hover {
+    color: #0056b3; /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* Reply and message content styling */
+.activity-reply {
+    font-size: 13px;
+    color: #888; /* Lighter gray for the reply text */
+    margin-top: 5px;
+    display: block;
+}
+
+.message-content {
+    font-size: 16px;
+    color: #333; /* Darker color for message text */
+    margin-top: 10px;
+    text-align: center;
+    background-color:antiquewhite;
+    border-radius: 4px;
+    line-height: 1.6; /* Improve readability */
+}
+
+/* Delete link styling */
+.delete-message-link {
+    font-size: 14px;
+    color: #d9534f; /* Red for delete link */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.delete-message-link:hover {
+    color: #c9302c; /* Darker red on hover */
+    text-decoration: underline;
+}
+
+/* Message divider */
+.message-divider {
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 15px;
+}
+.avatar {
+        width: 40px; /* Adjust avatar size */
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+#container_1{
+    align-items: center;
+    text-align: center;
+}
+
+</style>
+<h3>Recent Activity</h3>
+<hr class="section-divider">
+{% for message in room_messages %}
+    <div class="activity-message">
+        <div id="container_1">
+            <img src="{{message.user.avatar.url}}" class="avatar">
+            <small class="activity-user">
+                <a href="{% url 'user-profile' message.user.id %}" class="user-link">@{{ message.user.username }}</a> 
+                {{ message.created|timesince }} ago
+            </small><br>
+        </div>
+        
+        <small class="activity-reply">replied to: "<a href="{% url 'room' message.room.id %}">{{ message.room }}</a>"</small>
+        
+        <p class="message-content">{{ message }}</p>
+        
+        {% if request.user == message.user %}
+            <a href="{% url 'delete-message' message.id %}" class="delete-message-link">Delete</a>
+        {% endif %}
+        
+        <hr class="message-divider">
+    </div>
+{% endfor %}
